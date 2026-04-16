@@ -1,0 +1,10 @@
+init-local.el
+init-local.elc
+elpa/
+.cache/
+auto-save-list/
+custom.el
+*.elc
+*~
+init-local.el
+#*#
