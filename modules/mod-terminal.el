@@ -2,8 +2,8 @@
 
 ;; 终端模拟器: Vterm 或 Eat
 ;; 这里使用 vterm 作为默认推荐
-(use-package vterm
-  :ensure t)
+;(use-package vterm
+;  :ensure t)
 
 ;; 调试: Dape (DAP 客户端)
 (use-package dape

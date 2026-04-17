@@ -20,12 +20,35 @@
 (setq my-proxy-port "7890")
 
 ;; ----------------------------------------------------------------------------
-;; AI 助手配置 (API Key 等)
+;; AI 助手配置 (API Key 等) - 安全最佳实践
 ;; ----------------------------------------------------------------------------
-(setq my-gptel-api-key "YOUR_API_KEY_HERE")
+;; 方法1: 使用环境变量 (推荐)
+;; 在系统环境变量中设置 OPENAI_API_KEY，然后在这里读取
+(setq my-gptel-api-key (getenv "OPENAI_API_KEY"))
+
+;; 方法2: 使用 auth-source (Emacs 内置密码管理)
+;; 首先在 ~/.authinfo 或 ~/.authinfo.gpg 中添加:
+;; machine api.openai.com login token password YOUR_API_KEY
+;; 然后取消注释下面这行:
+;; (setq my-gptel-api-key
+;;       (auth-source-pick-first-password :host "api.openai.com"))
+
+;; 方法3: 直接设置 (不推荐，仅用于测试)
+;; (setq my-gptel-api-key "YOUR_API_KEY_HERE")
+
 (setq my-gptel-model "gpt-4o")
 ;; 可以根据自己使用的代理或国内镜像修改 Base URL
 (setq my-gptel-host "api.openai.com")
+
+;; ----------------------------------------------------------------------------
+;; 其他敏感信息配置示例
+;; ----------------------------------------------------------------------------
+;; GitHub Token 示例 (使用环境变量)
+;; (setq my-github-token (getenv "GITHUB_TOKEN"))
+
+;; 数据库密码示例 (使用 auth-source)
+;; (setq my-db-password
+;;       (auth-source-pick-first-password :host "db.example.com" :user "myuser"))
 
 (provide 'init-local)
 ;;; init-local.example.el ends here

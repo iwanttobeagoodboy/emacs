@@ -1,4 +1,5 @@
 ;;; early-init.el --- Early Initialization. -*- lexical-binding: t -*-
+(add-variable-watcher 'load-path #'my/trace-load-path-change)
 
 ;; 提高垃圾回收阈值，加速启动
 (setq gc-cons-threshold most-positive-fixnum
@@ -21,6 +22,7 @@
 
 ;; 加快文件 IO
 (setq file-name-handler-alist nil)
+
 
 (provide 'early-init)
 ;;; early-init.el ends here

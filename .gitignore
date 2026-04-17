@@ -1,10 +1,13 @@
 init-local.el
 init-local.elc
 elpa/
+elpaca/
+places
 .cache/
 auto-save-list/
 custom.el
 *.elc
 *~
 init-local.el
+recentf
 #*#
