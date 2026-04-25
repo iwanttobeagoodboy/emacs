@@ -70,7 +70,10 @@
   (global-treesit-auto-mode))
 
 ;; Tree-sitter 额外加载路径
-(setq treesit-extra-load-path '("~/.emacs.d/tree-sitter" "~/.config/emacs/tree-sitter"))
+;; 使用 expand-file-name 确保路径在 Windows 上正确展开
+(let ((local-ts-dir (expand-file-name "tree-sitter" user-emacs-directory)))
+  (when (file-exists-p local-ts-dir)
+    (setq treesit-extra-load-path (list local-ts-dir))))
 
 ;; Tree-sitter 语法检查函数
 (defun my-check-treesitter-grammars ()
