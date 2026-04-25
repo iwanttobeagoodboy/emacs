@@ -65,6 +65,7 @@
       (push "ripgrep (rg)" missing-tools))
     (unless (executable-find "fd")
       (push "fd" missing-tools))
+    ;; 仅在缺失工具时警告
     (when missing-tools
       (message "警告: 以下搜索工具未安装: %s" (string-join missing-tools ", ")))))
 

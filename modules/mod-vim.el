@@ -159,26 +159,22 @@
 (add-hook 'prog-mode-hook 'my-setup-vim-for-programming)
 
 ;; ----------------------------------------------------------------------------
-;; 9. 状态栏显示
+;; 9. 状态栏显示 (使用 doom-modeline 内置的 evil 状态显示)
 ;; ----------------------------------------------------------------------------
-(defun my-evil-state-indicator ()
-  "在状态栏显示当前evil状态"
-  (let ((state (if evil-mode
-                   (cond
-                    ((evil-normal-state-p) "NORMAL")
-                    ((evil-insert-state-p) "INSERT")
-                    ((evil-visual-state-p) "VISUAL")
-                    ((evil-motion-state-p) "MOTION")
-                    ((evil-emacs-state-p) "EMACS")
-                    (t "???"))
-                 "EMACS")))
-    (propertize (format " [%s]" state)
-                'face '(:weight bold :foreground "#ff6b6b"))))
+(setq doom-modeline-modal t)
 
-;; 添加到模式行
-(setq-default mode-line-format
-              (cons '(:eval (my-evil-state-indicator))
-                    mode-line-format))
+;; 提供一个自定义的状态指示器函数，用于内联使用
+(defun my-evil-state-indicator ()
+  "返回当前 evil 状态的简短字符串。"
+  (if evil-mode
+      (cond
+       ((evil-normal-state-p) "NORMAL")
+       ((evil-insert-state-p) "INSERT")
+       ((evil-visual-state-p) "VISUAL")
+       ((evil-motion-state-p) "MOTION")
+       ((evil-emacs-state-p) "EMACS")
+       (t "???"))
+    "EMACS"))
 
 ;; ----------------------------------------------------------------------------
 ;; 10. 验证函数
@@ -199,16 +195,7 @@
 (define-key help-map (kbd "V") 'my-verify-vim-config)
 
 ;; ----------------------------------------------------------------------------
-;; 11. 性能优化
-;; ----------------------------------------------------------------------------
-;; 延迟加载某些功能
-(with-eval-after-load 'evil
-  (run-with-idle-timer 2 nil (lambda ()
-                               (require 'evil-surround)
-                               (require 'evil-commentary))))
-
-;; ----------------------------------------------------------------------------
-;; 12. 提供模块
+;; 11. 提供模块
 ;; ----------------------------------------------------------------------------
 (provide 'mod-vim)
 ;;; mod-vim.el ends here

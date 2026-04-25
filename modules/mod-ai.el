@@ -3,6 +3,7 @@
 ;; GPTel: AI 聊天助手
 (use-package gptel
   :ensure t
+  :defer t
   :bind (("C-c a c" . gptel)
          ("C-c a s" . gptel-send)
          ("C-c a m" . gptel-menu))
@@ -60,9 +61,8 @@
 
 ;; AI 配置检查
 (defun my-check-ai-config ()
-  "检查 AI 配置是否完整"
-  (if (boundp 'my-gptel-api-key)
-      (message "AI 配置正常，API 密钥已设置")
+  "检查 AI 配置是否完整。仅在有问题时警告。"
+  (unless (boundp 'my-gptel-api-key)
     (warn "警告: AI API 密钥未设置，请配置 init-local.el")))
 
 (add-hook 'emacs-startup-hook 'my-check-ai-config)

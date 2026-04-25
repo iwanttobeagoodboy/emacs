@@ -13,11 +13,29 @@
 ;;   (shell-command (format "git config --global user.email \"%s\"" user-mail-address)))
 
 ;; ----------------------------------------------------------------------------
-;; 代理配置 (如果你不想启用代理，请将 my-proxy-enable 设为 nil)
+;; 代理配置 (支持认证格式)
 ;; ----------------------------------------------------------------------------
-(setq my-proxy-enable t)
+(setq my-proxy-enable t)      ; 设置为 t 会自动开启代理，设为 nil 关闭
+
+;; 方式1: 使用完整URL格式 (推荐，支持认证)
+;; 格式示例:
+;; - "127.0.0.1:7890"                    (无认证)
+;; - "user:password@127.0.0.1:7890"      (基础认证)
+;; - "http://user:pass@proxy.com:8080"   (完整URL)
+;; - "socks5://127.0.0.1:1080"           (SOCKS5代理)
+(setq my-proxy-url "127.0.0.1:7890")
+
+;; 方式2: 使用分开的host/port变量 (旧方式，向后兼容)
+;; 当 my-proxy-url 为 nil 时使用
 (setq my-proxy-host "127.0.0.1")
 (setq my-proxy-port "7890")
+
+;; 代理认证信息 (如果URL中已包含，则不需要单独设置)
+(setq my-proxy-username nil)
+(setq my-proxy-password nil)
+
+;; 不代理的主机列表
+(setq my-proxy-no-proxy "localhost,127.0.0.1,10.*,192.168.*,*.local")
 
 ;; ----------------------------------------------------------------------------
 ;; AI 助手配置 (API Key 等) - 安全最佳实践

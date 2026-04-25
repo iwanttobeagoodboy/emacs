@@ -5,6 +5,9 @@ elpaca/
 places
 .cache/
 auto-save-list/
+font/
+tree-sitter/
+.claude
 custom.el
 *.elc
 *~

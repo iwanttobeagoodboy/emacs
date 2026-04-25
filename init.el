@@ -23,14 +23,15 @@
 (require 'init-performance)
 (require 'init-basic)
 (require 'init-ui)
+
 (require 'init-keybind)
+
+;; Phase 2.5: Vim模式集成（编程效率优化）
+(require 'mod-vim)
 
 ;; Phase 2: 补全与交互
 (require 'init-search)
 (require 'init-completion)
-
-;; Phase 2.5: Vim模式集成（编程效率优化）
-(require 'mod-vim)
 
 ;; Phase 3: 开发环境
 (require 'mod-dev)

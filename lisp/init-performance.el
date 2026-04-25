@@ -8,7 +8,7 @@
   :config
   (setq gcmh-idle-delay 5
         gcmh-high-cons-threshold (* 64 1024 1024)  ;; 增加到 64MB
-        gcmh-verbose t))  ;; 启用详细日志
+        gcmh-verbose nil))
 
 ;; 启动时间测量
 (defvar my-emacs-start-time (current-time))
@@ -22,8 +22,8 @@
     ;; 重置 file-name-handler-alist
     (setq file-name-handler-alist file-name-handler-alist-original)))
 
-;; 记录原始值在 early-init 或使用默认
-(defvar file-name-handler-alist-original file-name-handler-alist)
+;; 记录原始值 (在 early-init 中已保存)
+;; file-name-handler-alist-original 定义在 early-init.el
 
 ;; 性能监控工具
 (use-package benchmark-init

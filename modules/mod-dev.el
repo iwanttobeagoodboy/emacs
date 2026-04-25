@@ -8,15 +8,7 @@
   (setq eglot-autoshutdown t
         eglot-extend-to-xref t
         eglot-events-buffer-size 0)  ;; 禁用事件缓冲区
-  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
-  ;; 自动设置 Eglot 对 Clangd 的默认初始化选项，解决 Windows 下 clangd 默认走 MSVC 导致找不到 MinGW <iostream> 的 Bug
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '((c-mode c++-mode c-ts-mode c++-ts-mode) .
-                   ("clangd" "--query-driver=**/*" "--compile-commands-dir=.")))
-    
-    (setq-default eglot-workspace-configuration
-                  '((:clangd . (:fallbackFlags ["-std=c++17" "--target=x86_64-w64-mingw32"]))))))
+  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio"))))
 
 ;; Eglot 性能优化
 ;; 暂时注释掉 eglot-booster，因为包源有问题
@@ -25,13 +17,6 @@
   :after eglot
   :config (eglot-booster-mode 1)
   (setq eglot-booster-auto-install-servers t))
-
-;; (use-package eglot-booster
-;;   :ensure t
-;;   :after eglot
-;;   :config
-;;   (eglot-booster-mode)
-;;   (setq eglot-booster-auto-install-servers t))
 
 ;; 语言服务器管理
 (defun my-check-lsp-servers ()
@@ -48,8 +33,7 @@
       (push "typescript-language-server (TypeScript/JavaScript)" missing-servers))
     
     (when missing-servers
-      (message "提示: 以下语言服务器未安装: %s" (string-join missing-servers ", "))
-      (message "请手动安装相应的语言服务器"))))
+      (message "提示: 以下语言服务器未安装: %s" (string-join missing-servers ", ")))))
 
 (add-hook 'emacs-startup-hook 'my-check-lsp-servers)
 
@@ -68,8 +52,88 @@
          ("C-x p p" . project-switch-project)
          ("C-x p s" . project-search)))
 
-;; 代码树级解析: Treesit
-(setq treesit-extra-load-path '("~/.emacs.d/tree-sitter"))
+;; ----------------------------------------------------------------------------
+;; Tree-sitter 语法解析系统
+;; ----------------------------------------------------------------------------
+
+;; 自动安装和管理 Tree-sitter 语法
+(use-package treesit-auto
+  :ensure t
+  :config
+  (setq treesit-auto-install 'prompt)  ; 'prompt, 't, or 'nil
+  (setq treesit-auto-add-to-auto-mode-alist 'all)  ; 'all, 'some, or 'none
+  
+  ;; 配置要安装的语法
+  (setq treesit-auto-langs '(bash c cpp css dockerfile go html java javascript json jsx make python rust toml tsx typescript yaml))
+  
+  ;; 启用全局模式
+  (global-treesit-auto-mode))
+
+;; Tree-sitter 额外加载路径
+(setq treesit-extra-load-path '("~/.emacs.d/tree-sitter" "~/.config/emacs/tree-sitter"))
+
+;; Tree-sitter 语法检查函数
+(defun my-check-treesitter-grammars ()
+  "检查 Tree-sitter 语法安装状态。"
+  (interactive)
+  (let ((missing-grammars '())
+        (installed-grammars '()))
+    
+    ;; 检查常用语法
+    (dolist (lang '(bash c cpp css go html java javascript json python rust typescript yaml))
+      (let ((grammar-symbol (intern (format "%s-ts-mode" lang))))
+        (if (treesit-language-available-p lang)
+            (push (symbol-name grammar-symbol) installed-grammars)
+          (push (symbol-name grammar-symbol) missing-grammars))))
+    
+    ;; 显示结果
+    (if (or missing-grammars installed-grammars)
+        (progn
+          (when installed-grammars
+            (message "✅ 已安装语法: %s" (string-join installed-grammars ", ")))
+          (when missing-grammars
+            (message "⚠️  缺失语法: %s" (string-join missing-grammars ", "))
+            (message "使用 M-x treesit-auto-install-all 安装所有缺失语法")))
+      (message "未配置 Tree-sitter 语法检查"))))
+
+;; 自动切换到 Tree-sitter 模式
+(defun my-auto-enable-treesit ()
+  "自动启用 Tree-sitter 模式（如果可用）。"
+  (when (and (fboundp 'treesit-available-p)
+             (treesit-available-p))
+    (pcase major-mode
+      ('c-mode (when (treesit-language-available-p 'c)
+                 (c-ts-mode)))
+      ('c++-mode (when (treesit-language-available-p 'cpp)
+                   (c++-ts-mode)))
+      ('python-mode (when (treesit-language-available-p 'python)
+                      (python-ts-mode)))
+      ('js-mode (when (treesit-language-available-p 'javascript)
+                  (js-ts-mode)))
+      ('typescript-mode (when (treesit-language-available-p 'typescript)
+                          (typescript-ts-mode)))
+      ('json-mode (when (treesit-language-available-p 'json)
+                    (json-ts-mode)))
+      ('yaml-mode (when (treesit-language-available-p 'yaml)
+                    (yaml-ts-mode)))
+      ('rust-mode (when (treesit-language-available-p 'rust)
+                    (rust-ts-mode)))
+      ('go-mode (when (treesit-language-available-p 'go)
+                  (go-ts-mode))))))
+
+;; 为支持的语言添加 hook
+(add-hook 'c-mode-hook 'my-auto-enable-treesit)
+(add-hook 'c++-mode-hook 'my-auto-enable-treesit)
+(add-hook 'python-mode-hook 'my-auto-enable-treesit)
+(add-hook 'js-mode-hook 'my-auto-enable-treesit)
+(add-hook 'typescript-mode-hook 'my-auto-enable-treesit)
+(add-hook 'json-mode-hook 'my-auto-enable-treesit)
+(add-hook 'yaml-mode-hook 'my-auto-enable-treesit)
+(add-hook 'rust-mode-hook 'my-auto-enable-treesit)
+(add-hook 'go-mode-hook 'my-auto-enable-treesit)
+
+;; Tree-sitter 字体锁定增强
+(setq treesit-font-lock-level 4)  ; 最大语法高亮级别
 
 ;; 自动格式化: Apheleia
 (use-package apheleia

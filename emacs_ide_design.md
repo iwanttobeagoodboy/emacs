@@ -3,9 +3,9 @@
 本方案旨在构建一个现代化、高性能、可扩展且长期可维护的 Emacs
 开发环境，覆盖代码编辑、项目管理、调试、AI 辅助及知识管理等完整工作流。
 
-**版本**: 2.0 (优化更新版)  
-**最后更新**: 2026-04-17  
-**状态**: ✅ 已实现并优化完成
+**版本**: 3.1
+**最后更新**: 2026-04-25
+**状态**: ✅ 已实现并持续维护
 
 ------------------------------------------------------------------------
 
@@ -30,6 +30,7 @@
 - **基础层**: `lisp/` 目录 - 核心功能配置
   - `init-basic.el`: Emacs 基础设置
   - `init-performance.el`: 性能优化配置
+  - `init-package.el`: 包管理器配置（elpaca + use-package）
   - `init-completion.el`: 补全系统配置
   - `init-search.el`: 搜索系统配置
   - `init-keybind.el`: 键位管理系统
@@ -55,16 +56,16 @@
 - **补全框架**: corfu + cape（弹出式补全）
 - **搜索框架**: vertico + consult + orderless（增量搜索）
 - **动作框架**: embark + marginalia（上下文动作）
-- **统一前缀**: `C-c` 作为用户自定义命令前缀
+- **统一前缀**: `SPC` 作为全局 leader 键（替代 `C-c`）
 
 ### 4. 分层与渐进式补全
 
 实现智能的多层补全策略：
 
-1. **基础补全**: cape 后端（字典、文件、符号、历史等）
+1. **基础补全**: cape 后端（字典、文件、符号、历史、关键词等）
 2. **语义补全**: eglot LSP 补全
-3. **AI 补全**: copilot.el（智能代码建议）
-4. **上下文补全**: corfu 弹出式界面
+3. **上下文补全**: corfu 弹出式界面
+4. **AI 增强**: gptel（对话式 AI 辅助）
 
 ### 5. 性能优化
 
@@ -91,9 +92,8 @@
 
 **组件栈**:
 - **UI 层**: corfu（弹出式补全界面）
-- **后端层**: cape（多源补全：dabbrev, file, dict, symbol, history 等）
-- **AI 层**: copilot.el（GitHub Copilot 集成）
-- **语法层**: treesit（现代语法高亮）
+- **后端层**: cape（多源补全：dabbrev, file, dict, symbol, history, keyword 等）
+- **语法层**: treesit（Tree-sitter 现代语法高亮）
 - **文档层**: eldoc（实时文档显示）
 
 **优化特性**:
@@ -120,12 +120,10 @@
 
 **AI 工具集**:
 - **对话式 AI**: gptel（GPT 模型集成）
-- **代码补全**: copilot.el（智能代码建议）
-- **UI 增强**: gptel-transient（更好的交互界面）
 
 **辅助功能**:
 - `my-ai-code-review`: 代码审查助手
-- `my-ai-explain-code`: 代码解释助手  
+- `my-ai-explain-code`: 代码解释助手
 - `my-ai-generate-docstring`: 文档生成助手
 - `my-check-ai-config`: 配置检查工具
 
@@ -223,7 +221,7 @@ graph TD
 - **模块化设计**: 创建独立的 `modules/mod-vim.el` 模块文件
 - **选择性启用**: 仅在 `prog-mode` 和 `text-mode` 中自动启用Vim模式
 - **模式排除**: 特殊模式（Magit、Dired、Eshell、Org模式）保持Emacs键绑定
-- **领导键集成**: 在evil-normal状态下使用 `C-c` 作为领导键
+- **领导键集成**: 在evil-normal状态下使用 `SPC` 作为领导键（与全局配置一致）
 
 **优化特性**:
 - **状态指示**: 模式行显示当前状态（NORMAL/INSERT/VISUAL）
@@ -231,7 +229,7 @@ graph TD
 - **快速退出**: 使用 `jk` 键序列快速退出插入模式（0.2秒延迟）
 - **兼容性保障**: 确保与LSP、补全系统、项目管理等现有功能兼容
 - **验证工具**: `my-verify-vim-config` 函数验证配置完整性
-- **切换命令**: `C-c v` 全局启用/禁用Vim模式
+- **切换命令**: `SPC T v` 全局启用/禁用Vim模式（同时保留 `C-c v` 作为备用）
 - **性能监控**: 避免启动时间增加超过1秒
 
 **风险与缓解**:
@@ -245,14 +243,16 @@ graph TD
 ### 终端集成
 
 **终端选项**:
-- **高性能**: eat（Emacs 异步终端）
-- **功能丰富**: vterm（libvterm 集成）
-- **轻量级**: ansi-term（内置终端）
+- **Eshell**: Emacs 内置 Shell
+- **Shell**: 系统 Shell (bash/zsh/cmd)
+- **project-eshell**: 项目根目录 Eshell
+
+**调试支持**:
+- **Dape**: 调试适配器协议 (DAP) 客户端
 
 **特性**:
-- 真彩色支持
-- 快速滚动
-- Shell 集成
+- 项目感知的 Shell
+- 可扩展的调试架构
 
 ------------------------------------------------------------------------
 
@@ -268,6 +268,7 @@ graph TD
 ├── init-local.example.el # 本地配置示例
 ├── lisp/                 # 基础配置层
 │   ├── init-basic.el     # 基础设置
+│   ├── init-package.el   # 包管理器配置
 │   ├── init-performance.el # 性能优化
 │   ├── init-completion.el # 补全系统
 │   ├── init-search.el    # 搜索系统
@@ -279,11 +280,11 @@ graph TD
     ├── mod-ai.el         # AI 集成
     ├── mod-org.el        # Org 模式
     ├── mod-terminal.el   # 终端集成
-    ├── mod-vim.el        # Vim模式集成（编程效率优化）
+    ├── mod-vim.el        # Vim模式集成
     └── mod-lang/         # 语言特定配置
         ├── lang-cc.el    # C/C++ 配置
         ├── lang-python.el # Python 配置
-        └── lang-elisp.el # Elisp 配置
+        └── lang-elisp.el # Emacs Lisp 配置
 ```
 
 ### 启动流程
@@ -337,9 +338,10 @@ graph TD
 
 ### 调试与问题解决
 1. 检查 `*Messages*` 缓冲区获取错误信息
-2. 使用 `M-x my-verify-optimizations` 验证配置
-3. 查看 `M-x benchmark-init` 分析性能
-4. 使用 `M-x toggle-debug-on-error` 启用调试
+2. 使用 `M-x my-verify-vim-config` 验证 Vim 模式配置
+3. 使用 `M-x my-check-lsp-servers` 检查语言服务器
+4. 查看 `M-x benchmark-init` 分析性能
+5. 使用 `M-x toggle-debug-on-error` 启用调试
 
 ------------------------------------------------------------------------
 

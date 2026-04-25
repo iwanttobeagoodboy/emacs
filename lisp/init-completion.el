@@ -34,7 +34,7 @@
   ;; 增强补全后端
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;; cape-symbol 在新版 cape 中已移除，使用 cape-elisp-symbol 替代（仅 elisp 模式）
   (add-to-list 'completion-at-point-functions #'cape-history)
   ;; 按模式特定的后端
   (add-hook 'text-mode-hook
@@ -43,6 +43,10 @@
   (add-hook 'prog-mode-hook
             (lambda ()
               (add-to-list 'completion-at-point-functions #'cape-sgml t)))
+  ;; Emacs Lisp 模式的符号补全
+  (add-hook 'emacs-lisp-mode-hook
+            (lambda ()
+              (add-to-list 'completion-at-point-functions #'cape-elisp-symbol t)))
   :config
   ;; 设置字典文件路径
   (setq cape-dict-file (expand-file-name "dict.txt" user-emacs-directory))
@@ -62,26 +66,9 @@
         (princ "• cape-keyword: 关键词补全\n")
         (princ "• cape-dict: 字典补全\n")
         (princ "• cape-abbrev: 缩写补全\n")
-        (princ "• cape-symbol: 符号补全\n")
         (princ "• cape-history: 历史补全\n")
         (princ "• cape-tex: LaTeX 补全 (仅 text-mode)\n")
         (princ "• cape-sgml: SGML/XML 补全 (仅 prog-mode)\n")))))
-
-;; Copilot.el (手动触发 AI 补全)
-;; 1. 首先确保 track-changes 版本足够新
-;(use-package track-changes
-;  :ensure t
-;  :elpaca (track-changes :host github :repo "emacs-straight/track-changes"))
-  
-;; 2. 然后再安装 copilot
-;(use-package copilot
-;  :ensure (:host github :repo "copilot-emacs/copilot.el" :files ("dist" "*.el"))
-;  :hook (prog-mode . copilot-mode)
-;  :bind (:map copilot-completion-map
-;              ("<tab>" . 'copilot-accept-completion)
-;              ("TAB" . 'copilot-accept-completion)
-;              ("C-TAB" . 'copilot-accept-completion-by-word)
-;              ("C-<tab>" . 'copilot-accept-completion-by-word)))
 
 (provide 'init-completion)
 ;;; init-completion.el ends here

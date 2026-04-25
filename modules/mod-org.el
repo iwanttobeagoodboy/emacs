@@ -21,6 +21,7 @@
 ;; Org Roam: 知识管理
 (use-package org-roam
   :ensure t
+  :defer t
   :custom
   (org-roam-directory (file-truename "~/org/roam"))
   :bind (("C-c n l" . org-roam-buffer-toggle)
@@ -38,6 +39,7 @@
 ;; Hugo 博客导出
 (use-package ox-hugo
   :ensure t
+  :defer t
   :after org
   :config
   (setq org-hugo-default-section-directory "content/posts/"
@@ -47,6 +49,7 @@
 ;; Reveal.js 演示文稿导出
 (use-package ox-reveal
   :ensure t
+  :defer t
   :after org
   :config
   (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"

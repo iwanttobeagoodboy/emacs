@@ -2,9 +2,9 @@
 
 基于现代化、高性能、内建优先的设计原则，本指南将架构方案转化为可执行的配置实施步骤。
 
-**版本**: 2.0 (优化更新版)  
-**最后更新**: 2026-04-17  
-**实施状态**: ✅ 已完成并优化
+**版本**: 3.1
+**最后更新**: 2026-04-25
+**实施状态**: ✅ 已完成并持续维护
 
 整体实施遵循： - 先基座后业务 - 先性能后功能 - 模块化分层
 
@@ -25,16 +25,16 @@
 │   ├── init-basic.el              # Emacs 基础设置
 │   ├── init-package.el            # 包管理器配置（elpaca + use-package）
 │   ├── init-performance.el        # 性能优化配置
-│   ├── init-completion.el         # 补全系统配置（corfu + cape + copilot）
+│   ├── init-completion.el         # 补全系统配置（corfu + cape）
 │   ├── init-search.el             # 搜索系统配置（vertico + consult + ripgrep/fd）
-│   ├── init-keybind.el            # 键位管理系统（C-c 前缀，帮助函数）
+│   ├── init-keybind.el            # 键位管理系统（SPC leader 键，帮助函数）
 │   ├── init-ui.el                 # 用户界面配置（主题、模式行、图标）
 │   └── init-proxy.el              # 网络代理配置
 └── modules/                       # 功能模块层
     ├── mod-dev.el                 # 开发环境（LSP、调试、测试）
-    ├── mod-ai.el                  # AI 集成（gptel、copilot、辅助函数）
+    ├── mod-ai.el                  # AI 集成（gptel、辅助函数）
     ├── mod-org.el                 # Org 模式与知识管理（roam、agenda、导出）
-    ├── mod-terminal.el            # 终端集成（vterm、eshell）
+    ├── mod-terminal.el            # 终端集成（eshell、调试）
     ├── mod-vim.el                 # Vim模式集成（编程效率优化）
     └── mod-lang/                  # 语言特定配置
         ├── lang-python.el         # Python 开发环境
@@ -103,14 +103,13 @@
 
 2. **补全系统** (`lisp/init-completion.el`):
    - corfu（弹出式补全界面）
-   - cape（多源补全后端：dabbrev, file, dict, symbol, history, tex, sgml）
-   - copilot.el（GitHub Copilot AI 补全）
+   - cape（多源补全后端：dabbrev, file, dict, symbol, history, keyword, tex, sgml）
    - corfu-terminal（终端兼容）
    - `my-describe-completion-backends` 帮助函数
 
 3. **键位管理系统** (`lisp/init-keybind.el`):
-   - 统一前缀键：`C-c`
-   - 功能分类：文件(f)、项目(p)、代码(c)、Git(g)、AI(a)、Org(o)、终端(t)、帮助(h)
+   - 统一前缀键：`SPC`（空格键，Spacemacs风格）
+   - 功能分类：文件(f)、项目(p)、代码(c)、Git(g)、AI(a)、Org(o)、终端(t)、帮助(h)、切换(T)
    - `my-describe-keybindings` 键位帮助函数
    - which-key 自动提示支持
 
@@ -135,24 +134,19 @@
 4. **Git 集成**:
    - magit（完整 Git 客户端）
    - diff-hl（实时差异高亮）
-   - 修复键位冲突（Magit 与自定义前缀协调）
+   - 键位冲突处理
 
 ### Phase 4：AI 集成优化 ✅
 
 #### 已实现的 AI 功能 (`modules/mod-ai.el`)
 1. **对话式 AI**:
    - gptel（多模型 GPT 集成）
-   - gptel-transient（更好的 UI 交互）
 
 2. **AI 辅助函数**:
    - `my-ai-code-review`: 代码审查助手
    - `my-ai-explain-code`: 代码解释助手
    - `my-ai-generate-docstring`: 文档生成助手
    - `my-check-ai-config`: 配置检查工具
-
-3. **代码补全 AI**:
-   - copilot.el 深度集成
-   - 智能代码建议和补全
 
 ### Phase 5：Org 知识管理系统 ✅
 
@@ -163,7 +157,7 @@
 
 2. **任务与日程管理**:
    - org-agenda（日程视图）
-   - org-super-agenda（增强议程视图）
+   - org-capture（快速捕获）
 
 3. **发布与导出功能**:
    - ox-hugo（博客发布集成）
@@ -185,11 +179,11 @@
 2. **混合模式策略**:
   - 编程模式（prog-mode）和文本模式（text-mode）自动启用Vim键绑定
   - 特殊模式保持Emacs键绑定（Magit、Dired、Eshell、Org模式等）
-  - 全局切换命令 `C-c v` 启用/禁用Vim模式
+  - 全局切换命令 `SPC T v` 启用/禁用Vim模式（同时保留 `C-c v` 作为备用）
 
 3. **兼容性保障**:
   - 与现有LSP（eglot）集成
-  - 与补全系统（corfu、copilot）兼容
+  - 与补全系统（corfu、cape）兼容
   - 与项目管理（project.el）协调
   - 与Git集成（magit）无冲突
 
@@ -202,18 +196,17 @@
 
 #### 已实现的终端支持 (`modules/mod-terminal.el`)
 1. **终端仿真器**:
-  - vterm（高性能，真彩色支持）
   - eshell（Emacs 内置 Shell）
+  - shell（系统 Shell）
   - project-eshell（项目感知的 Shell）
 
 2. **调试支持**:
   - dape（调试适配器协议）
-  - 多语言调试配置
 
 3. **语言特定配置** (`modules/mod-lang/`):
-  - Python：lsp-pyright、python-mode、调试配置
-  - C/C++：clangd、cmake 支持、调试配置
-  - Elisp：elisp 开发工具、调试支持
+  - Python：python-ts-mode、eglot (pyright)、调试配置
+  - C/C++：c-ts-mode/c++-ts-mode、eglot (clangd)、cmake 支持、调试配置
+  - Emacs Lisp：emacs-lisp-mode、调试支持
 
 ------------------------------------------------------------------------
 
@@ -221,9 +214,8 @@
 
 ### 已完成的质量保证
 1. **配置验证系统**:
-   - `my-verify-optimizations` 函数验证所有优化配置
-   - 10/10 关键功能验证通过
-   - 自动化测试关键配置路径
+   - 多个检查函数验证各项配置状态
+   - 自动化检测关键配置路径
 
 2. **Vim模式专项测试**:
    - **基础功能测试**: Vim模式开关、基本Vim命令、快速退出机制
@@ -298,7 +290,7 @@
    - 查看 `*Warnings*` 缓冲区
 
 2. **功能问题**:
-   - 运行 `M-x my-verify-optimizations`
+   - 运行 `M-x my-check-lsp-servers` 等检查函数
    - 检查相关模块是否加载
    - 验证外部工具是否安装
 
@@ -327,7 +319,7 @@
 
 ### 推荐使用流程
 1. **初始设置**: 按照使用手册完成系统准备和配置
-2. **日常使用**: 利用统一的 `C-c` 前缀快速访问功能
+2. **日常使用**: 利用统一的 `SPC` 前缀快速访问功能
 3. **问题解决**: 使用内置的帮助和验证工具诊断问题
 4. **功能扩展**: 在模块化架构基础上添加个人需求
 
