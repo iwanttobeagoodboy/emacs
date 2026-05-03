@@ -12,10 +12,6 @@
 (setq-default buffer-file-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-;; Windows eshell 外部命令输出是 GBK，需要正确解码
-(when (eq system-type 'windows-nt)
-  (setq eshell-coding-system 'chinese-gbk-dos))
-
 ;; ──────────────────────────────────────────────────────
 ;; 2. 保命机制：文件备份与自动保存 (发配到 .cache)
 ;; ──────────────────────────────────────────────────────
@@ -47,6 +43,15 @@
 ;; ──────────────────────────────────────────────────────
 ;; 光标不要闪烁，减少视觉疲劳
 (blink-cursor-mode 0)
+
+;; 跨会话持久化：命令历史、补全历史、光标位置、最近文件
+(savehist-mode 1)
+(save-place-mode 1)
+(recentf-mode 1)
+(setq recentf-max-saved-items 50)
+
+;; 文件被外部修改时自动刷新
+(global-auto-revert-mode 1)
 
 ;; 丝滑滚动：不再像默认那样"一跳半个屏幕"
 ;; 逐行滚动，并在光标距离屏幕边缘 3 行处就开始移动

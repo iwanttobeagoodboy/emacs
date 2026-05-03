@@ -22,7 +22,8 @@
     "p" '(:ignore t :which-key "project (项目)")
     "c" '(:ignore t :which-key "code (代码)")
     "n" '(:ignore t :which-key "notes (笔记)")
-    "o" '(:ignore t :which-key "open (面板)")))
+    "o" '(:ignore t :which-key "open (面板)")
+    "d" '(:ignore t :which-key "debug (调试)")))
 
 (provide 'core-keybinds)
 ;;; core-keybinds.el ends here

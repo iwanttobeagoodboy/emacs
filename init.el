@@ -46,7 +46,8 @@
 ;; --- [业务模块 Modules] ---
 (require 'mod-completion)  ; 4. 基础设施
 (require 'mod-prog)        ; 5. 编程引擎
-(require 'mod-git)         ; 6. Git
+(require 'mod-shell)       ; 6. 终端增强
+(require 'mod-git)         ; 7. Git
 (require 'mod-org)         ; 7. GTD
 (require 'mod-roam)          ; 8. 知识管理
 

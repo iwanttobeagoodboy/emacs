@@ -3,14 +3,17 @@
 ;; ──────────────────────────────────────────────────────
 ;; 1. 配置包源
 ;; ──────────────────────────────────────────────────────
+;; 清华镜像优先，MELPA 官方源作为后备（部分包如 bui 不在镜像中）
 (setq package-archives
-      '(("gnu"   . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-        ("nongnu" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
-        ("melpa" . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
-        
-(setq package-archive-priorities '(("melpa"  . 100)
-                                   ("nongnu" . 50)
-                                   ("gnu"    . 10)))
+      '(("melpa"          . "https://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+        ("melpa-official" . "https://melpa.org/packages/")
+        ("nongnu"         . "https://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
+        ("gnu"            . "https://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
+
+(setq package-archive-priorities '(("melpa"          . 100)
+                                   ("melpa-official" . 90)
+                                   ("nongnu"         . 50)
+                                   ("gnu"            . 10)))
 
 ;; ──────────────────────────────────────────────────────
 ;; 2. 初始化底层包管理器 (package.el)
