@@ -162,6 +162,7 @@
 
 ;; Tree-sitter 模式各自的缩进偏移量
 (setq c-ts-mode-indent-offset 4)
+(setq c-ts-mode-indent-style 'bsd)
 (setq cmake-ts-mode-indent-offset 4)
 
 ;; yank 时临时禁用 electric-indent，防止首行多出一级缩进
